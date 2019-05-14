@@ -59,7 +59,7 @@ void USB_ReadWriteFile(void)
 	DIR dir;		/* Directory object */
 	FILINFO fno;	/* File information object */
 
-	f_mount(0, &fatFS);		/* Register volume work area (never fails) */
+	f_mount(&fatFS, "/" , 0);		/* Register volume work area (never fails) */
 
 	rc = f_open(&fileObj, "MESSAGE.TXT", FA_READ);
 	if (rc) {
@@ -147,6 +147,7 @@ void USB_ReadWriteFile(void)
  */
 void EVENT_USB_Host_DeviceAttached(const uint8_t corenum)
 {
+    set_usb_status(true);
 	DEBUGOUT(("Device Attached on port %d\r\n"), corenum);
 }
 
@@ -155,6 +156,8 @@ void EVENT_USB_Host_DeviceAttached(const uint8_t corenum)
  */
 void EVENT_USB_Host_DeviceUnattached(const uint8_t corenum)
 {
+	set_usb_status(false);
+	set_disk_status(STA_NOINIT);
 	DEBUGOUT(("\r\nDevice Unattached on port %d\r\n"), corenum);
 }
 
@@ -235,8 +238,7 @@ void EVENT_USB_Host_HostError(const uint8_t corenum, const uint8_t ErrorCode)
 	DEBUGOUT(("Host Mode Error\r\n"
 			  " -- Error port %d\r\n"
 			  " -- Error Code %d\r\n" ), corenum, ErrorCode);
-
-	for (;; ) {}
+    set_usb_error_info(corenum, ErrorCode, 0);
 }
 
 /** Event handler for the USB_DeviceEnumerationFailed event. This indicates that a problem occurred while
@@ -252,7 +254,7 @@ void EVENT_USB_Host_DeviceEnumerationFailed(const uint8_t corenum,
 			  " -- Sub Error Code %d\r\n"
 			  " -- In State %d\r\n" ),
 			 corenum, ErrorCode, SubErrorCode, USB_HostState[corenum]);
-
+	set_usb_error_info(corenum, ErrorCode, SubErrorCode);
 }
 
 /* Get the disk data structure */
@@ -318,7 +320,7 @@ int FSUSB_DiskReadSectors(DISK_HANDLE_T *hDisk, void *buff, uint32_t secStart, u
 {
 	if (MS_Host_ReadDeviceBlocks(hDisk, 0, secStart, numSec, DiskCapacity.BlockSize, buff)) {
 		DEBUGOUT("Error reading device block.\r\n");
-		USB_Host_SetDeviceConfiguration(FlashDisk_MS_Interface.Config.PortNumber, 0);
+		//USB_Host_SetDeviceConfiguration(FlashDisk_MS_Interface.Config.PortNumber, 0);
 		return 0;
 	}
 	return 1;

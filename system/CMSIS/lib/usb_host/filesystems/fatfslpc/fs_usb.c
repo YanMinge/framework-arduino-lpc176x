@@ -38,6 +38,11 @@
 /* Disk Status */
 static volatile DSTATUS Stat = STA_NOINIT;
 
+/* USB Status */
+static int usb_connected = false;
+
+static usb_error_info_type usb_error_info ;
+
 /* 100Hz decrement timer stopped at zero (disk_timerproc()) */
 static volatile WORD Timer2;
 
@@ -77,6 +82,7 @@ DSTATUS disk_initialize(BYTE drv)
 	/* Reset */
 	Stat = STA_NOINIT;
 
+    Timer2 = 2000;
 	FSUSB_DiskInsertWait(hDisk); /* Wait for card to be inserted */
 
 	/* Enumerate the card once detected. Note this function may block for a little while. */
@@ -135,9 +141,10 @@ DRESULT disk_ioctl(BYTE drv, BYTE ctrl, void *buff)
 }
 
 /* Read Sector(s) */
-DRESULT disk_read(BYTE drv, BYTE *buff, DWORD sector, BYTE count)
+//DRESULT disk_read(BYTE drv, BYTE *buff, DWORD sector, BYTE count)
+DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
-	if (drv || !count) {
+	if (pdrv || !count) {
 		return RES_PARERR;
 	}
 	if (Stat & STA_NOINIT) {
@@ -161,10 +168,11 @@ DSTATUS disk_status(BYTE drv)
 }
 
 /* Write Sector(s) */
-DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, BYTE count)
+//DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, BYTE count)
+DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
 
-	if (drv || !count) {
+	if (pdrv || !count) {
 		return RES_PARERR;
 	}
 	if (Stat & STA_NOINIT) {
@@ -176,6 +184,35 @@ DRESULT disk_write(BYTE drv, const BYTE *buff, DWORD sector, BYTE count)
 	}
 
 	return RES_ERROR;
+}
+
+bool is_usb_connected(void)
+{
+  return usb_connected;
+}
+
+void set_usb_status(bool status)
+{
+  usb_connected = status;
+}
+
+void set_disk_status(DSTATUS status)
+{
+  Stat = status;
+}
+
+void set_usb_error_info(const uint8_t corenum,
+                         const uint8_t ErrorCode,
+                         const uint8_t SubErrorCode)
+{
+  usb_error_info.corenum = corenum;
+  usb_error_info.ErrorCode = ErrorCode;
+  usb_error_info.SubErrorCode = SubErrorCode;
+}
+
+usb_error_info_type get_usb_error_info(void)
+{
+  return usb_error_info;
 }
 
 void disk_timerproc (void)

@@ -1,7 +1,7 @@
 #ifndef _RTC_DEFINED
 #define _RTC_DEFINED
 
-#include "../fatfs/src/integer.h"
+#include "../fatfs/src/ff.h"
 #include "lpc17xx_rtc.h"
 
 typedef struct {

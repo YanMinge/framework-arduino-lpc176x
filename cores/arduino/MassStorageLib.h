@@ -1,27 +1,45 @@
-/**
- * TwoWire.h - TWI/I2C library for Arduino & Wiring
- * Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
+/**   
+ * \par Copyright (C), 2018-2019, MakeBlock
+ * \class   NULL
+ * \brief   driver for USB HOST mass storge driver support.
+ * @file    MassStorageLib.h
+ * @author  MakeBlock
+ * @version V1.0.0
+ * @date    2019/05/14
+ * @brief   Header file for USB HOST mass storge driver.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * \par Copyright
+ * This software is Copyright (C), 2018-2019, MakeBlock. Use is subject to license \n
+ * conditions. The main licensing options available are GPL V2 or Commercial: \n
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * \par Open Source Licensing GPL V2
+ * This is the appropriate option if you want to share the source code of your \n
+ * application with everyone you distribute it to, and you also want to give them \n
+ * the right to share who uses it. If you wish to use this software under Open \n
+ * Source Licensing, you must contribute all your source code to the open source \n
+ * community in accordance with the GPL Version 2 when your application is \n
+ * distributed. See http://www.gnu.org/copyleft/gpl.html
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * \par Description
+ * This file is a drive for Virtual serial port.
  *
- * Modified 2012 by Todd Krein (todd@krein.org) to implement repeated starts
+ * \par Method List:
+ *
+ * \par History:
+ * <pre>
+ * `<Author>`         `<Time>`        `<Version>`        `<Descr>`
+ * Mark Yan         2019/05/14     1.0.0            Initial function design.
+ * </pre>
+ *
  */
 
 #ifndef _MASS_STORAGE_HOST_H_
 #define _MASS_STORAGE_HOST_H_
 
+#include "../../system/CMSIS/lib/usb_host/MassStorageHost/fsusb_cfg.h"
 #include "../../system/CMSIS/lib/usb_host/MassStorageHost/MassStorageHost.h"
-
-#endif // _MASS_STORAGE_HOST_H_
+/**
+ * @ingroup Mass_Storage_Host
+ * @{
+ */
+#endif /* _MASS_STORAGE_HOST_H_ */

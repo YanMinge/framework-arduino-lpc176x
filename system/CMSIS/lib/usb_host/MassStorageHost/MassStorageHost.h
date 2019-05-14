@@ -34,7 +34,6 @@
 #define __MASS_STORAGE_HOST_H_
 
 #include "LPC17xx.h"
-#include "MarlinConfigPre.h"
 #include "../LPCUSBLib/Drivers/USB/USB.h"
 #include "../../system/CMSIS/lib/usb_host/filesystems/fatfs/src/ff.h"
 #include <ctype.h>

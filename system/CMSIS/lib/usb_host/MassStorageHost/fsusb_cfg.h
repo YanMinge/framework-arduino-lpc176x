@@ -35,14 +35,21 @@
 #include <string.h>
 #include "../filesystems/fatfs/src/ffconf.h"
 #include "../filesystems/fatfs/src/diskio.h"
-#include "MassStorageHost.h"
+#include "../LPCUSBLib/Drivers/USB/USB.h"
 
 /**
  * @ingroup Mass_Storage_Host
  * @{
  */
 
-#define DEBUGOUT(...) 
+#define DEBUGOUT(...)
+
+typedef struct
+{
+  uint8_t corenum;
+  uint8_t ErrorCode;
+  uint8_t SubErrorCode;
+} usb_error_info_type;
 
 typedef USB_ClassInfo_MS_Host_t DISK_HANDLE_T;
 
@@ -115,6 +122,14 @@ extern void rtc_initialize(void);	/**< RTC initialization function */
  * @return	0 when operation failed 1 when successfully completed
  */
 int FSUSB_DiskReadyWait(DISK_HANDLE_T *hDisk, int tout);
+
+void set_usb_status(bool status);
+
+void set_disk_status(DSTATUS status);
+
+void set_usb_error_info(const uint8_t corenum,
+                         const uint8_t ErrorCode,
+                         const uint8_t SubErrorCode);
 
 /* Erase block size fixed to 4K */
 #define FSUSB_DiskGetBlockSz(hDisk)         (4 * 1024)
