@@ -53,12 +53,15 @@ void HAL_USBInit(uint8_t corenum)
 	PINSEL_ConfigPin(&PinCfg);
 
 #if defined(USB_CAN_BE_HOST)
-	/* USB_Power switch */
 	PinCfg.Funcnum = 2;
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
-	PinCfg.Pinnum = 19;
+	PinCfg.Pinnum = 19;            //Port Power enable signal for USB port
 	PinCfg.Portnum = 1;
+	PINSEL_ConfigPin(&PinCfg);
+	//PinCfg.Pinnum = 22;          //Power Status for USB port
+	//PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 27;            //USB port Over-Current status
 	PINSEL_ConfigPin(&PinCfg);
 #endif
 	

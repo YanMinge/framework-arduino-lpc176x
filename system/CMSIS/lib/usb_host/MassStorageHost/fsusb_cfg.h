@@ -123,10 +123,6 @@ extern void rtc_initialize(void);	/**< RTC initialization function */
  */
 int FSUSB_DiskReadyWait(DISK_HANDLE_T *hDisk, int tout);
 
-void set_usb_status(bool status);
-
-void set_disk_status(DSTATUS status);
-
 void set_usb_error_info(const uint8_t corenum,
                          const uint8_t ErrorCode,
                          const uint8_t SubErrorCode);
