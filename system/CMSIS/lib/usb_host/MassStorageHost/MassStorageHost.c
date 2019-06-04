@@ -25,6 +25,9 @@ static uint8_t buffer[8 * 1024];
 STATIC FATFS fatFS;	/* File system object */
 STATIC FIL fileObj;	/* File object */
 
+extern void set_usb_status(bool status);
+extern void set_disk_status(DSTATUS status);
+
 /*****************************************************************************
  * Public types/enumerations/variables
  ****************************************************************************/
@@ -36,10 +39,7 @@ STATIC FIL fileObj;	/* File object */
 /* Function to spin forever when there is an error */
 void die(FRESULT rc)
 {
-#if 0
-	DEBUGOUT("*******DIE %d*******\r\n", rc);
-	while (1) {}/* Spin for ever */
-#endif
+
 }
 
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
@@ -52,10 +52,8 @@ void SetupHardware(void)
 void USB_ReadWriteFile(void)
 {
 	FRESULT rc;		/* Result code */
-	int i;
 	UINT bw, br;
-	uint8_t *ptr;
-	char debugBuf[64];
+	char debugBuf[300];
 	DIR dir;		/* Directory object */
 	FILINFO fno;	/* File information object */
 
@@ -73,10 +71,6 @@ void USB_ReadWriteFile(void)
 			rc = f_read(&fileObj, buffer, sizeof buffer, &br);
 			if (rc || !br) {
 				break;					/* Error or end of file */
-			}
-			ptr = (uint8_t *) buffer;
-			for (i = 0; i < br; i++) {	/* Type the data */
-				DEBUGOUT("%c", ptr[i]);
 			}
 		}
 		if (rc) {
@@ -228,12 +222,13 @@ void EVENT_USB_Host_DeviceEnumerationComplete(const uint8_t corenum)
 	DEBUGOUT("Vendor \"%.8s\", Product \"%.16s\"\r\n", InquiryData.VendorID, InquiryData.ProductID);
 
 	DEBUGOUT("Mass Storage Device Enumerated.\r\n");
+	set_usb_error_info(corenum, 0, 0);
 }
 
 /** Event handler for the USB_HostError event. This indicates that a hardware error occurred while in host mode. */
 void EVENT_USB_Host_HostError(const uint8_t corenum, const uint8_t ErrorCode)
 {
-	USB_Disable(corenum, USB_MODE_Host);
+	//USB_Disable(corenum, USB_MODE_Host);
 
 	DEBUGOUT(("Host Mode Error\r\n"
 			  " -- Error port %d\r\n"
@@ -267,6 +262,9 @@ DISK_HANDLE_T *FSUSB_DiskInit(void)
 int FSUSB_DiskInsertWait(DISK_HANDLE_T *hDisk)
 {
 	while (USB_HostState[hDisk->Config.PortNumber] != HOST_STATE_Configured) {
+		if(get_timer() > FSUSB_INSERT_WAIT_TIMEOUT) {
+			return 0;
+		}
 		MS_Host_USBTask(hDisk);
 		USB_USBTask(hDisk->Config.PortNumber, USB_MODE_Host);
 	}

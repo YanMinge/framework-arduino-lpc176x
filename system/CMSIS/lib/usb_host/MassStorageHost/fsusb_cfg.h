@@ -126,9 +126,11 @@ int FSUSB_DiskReadyWait(DISK_HANDLE_T *hDisk, int tout);
 void set_usb_error_info(const uint8_t corenum,
                          const uint8_t ErrorCode,
                          const uint8_t SubErrorCode);
+WORD get_timer(void);
 
 /* Erase block size fixed to 4K */
 #define FSUSB_DiskGetBlockSz(hDisk)         (4 * 1024)
+#define FSUSB_INSERT_WAIT_TIMEOUT           2000
 
 /**
  * @}
