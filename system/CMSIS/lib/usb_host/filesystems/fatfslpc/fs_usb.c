@@ -44,7 +44,7 @@ static int usb_connected = false;
 static usb_error_info_type usb_error_info ;
 
 /* 100Hz decrement timer stopped at zero (disk_timerproc()) */
-static volatile WORD Timer2;
+static volatile WORD Timer;
 
 static DISK_HANDLE_T *hDisk;
 
@@ -82,12 +82,13 @@ DSTATUS disk_initialize(BYTE drv)
 	/* Reset */
 	Stat = STA_NOINIT;
 
-    Timer2 = 2000;
-	FSUSB_DiskInsertWait(hDisk); /* Wait for card to be inserted */
-
+    Timer = 0;
+	
+	if(!FSUSB_DiskInsertWait(hDisk)) {
+      return Stat;
+	}
 	/* Enumerate the card once detected. Note this function may block for a little while. */
 	if (!FSUSB_DiskAcquire(hDisk)) {
-		DEBUGOUT("Disk Enumeration failed...\r\n");
 		return Stat;
 	}
 
@@ -188,12 +189,12 @@ DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 
 bool is_usb_connected(void)
 {
-  return usb_connected;
+	return usb_connected;
 }
 
 void set_usb_status(bool status)
 {
-  usb_connected = status;
+	usb_connected = status;
 }
 
 void set_disk_status(DSTATUS status)
@@ -202,20 +203,26 @@ void set_disk_status(DSTATUS status)
 }
 
 void set_usb_error_info(const uint8_t corenum,
-                         const uint8_t ErrorCode,
-                         const uint8_t SubErrorCode)
+						const uint8_t ErrorCode,
+						const uint8_t SubErrorCode)
 {
-  usb_error_info.corenum = corenum;
-  usb_error_info.ErrorCode = ErrorCode;
-  usb_error_info.SubErrorCode = SubErrorCode;
+	usb_error_info.corenum = corenum;
+	usb_error_info.ErrorCode = ErrorCode;
+	usb_error_info.SubErrorCode = SubErrorCode;
 }
 
 usb_error_info_type get_usb_error_info(void)
 {
-  return usb_error_info;
+	return usb_error_info;
 }
 
 void disk_timerproc (void)
 {
-
+	Timer++;
 }
+
+WORD get_timer(void)
+{
+	return Timer;
+}
+
