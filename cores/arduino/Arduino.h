@@ -34,6 +34,7 @@
 #include <pinmapping.h>
 #include <gpio.h>
 
+#include <pwm.h>
 using boolean = bool;
 
 #define HIGH         0x01
