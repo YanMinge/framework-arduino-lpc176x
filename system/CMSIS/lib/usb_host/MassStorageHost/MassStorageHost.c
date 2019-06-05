@@ -151,7 +151,6 @@ void EVENT_USB_Host_DeviceAttached(const uint8_t corenum)
 void EVENT_USB_Host_DeviceUnattached(const uint8_t corenum)
 {
 	set_usb_status(false);
-	set_disk_status(STA_NOINIT);
 	DEBUGOUT(("\r\nDevice Unattached on port %d\r\n"), corenum);
 }
 

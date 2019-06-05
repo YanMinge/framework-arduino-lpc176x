@@ -130,7 +130,7 @@ WORD get_timer(void);
 
 /* Erase block size fixed to 4K */
 #define FSUSB_DiskGetBlockSz(hDisk)         (4 * 1024)
-#define FSUSB_INSERT_WAIT_TIMEOUT           2000
+#define FSUSB_INSERT_WAIT_TIMEOUT           2500
 
 /**
  * @}

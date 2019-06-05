@@ -3504,7 +3504,6 @@ FRESULT f_mount (
 	int vol;
 	FRESULT res;
 	const TCHAR *rp = path;
-    set_disk_status(STA_NOINIT);
 
 	/* Get logical drive number */
 	vol = get_ldnumber(&rp);
