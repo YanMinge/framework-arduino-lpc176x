@@ -39,6 +39,8 @@
 #define  __INCLUDE_FROM_MS_DRIVER
 #define  __INCLUDE_FROM_MASSSTORAGE_HOST_C
 #include "MassStorageClassHost.h"
+#include "Lpc17xx_uart.h"
+#include "lpc17xx_wdt.h"
 
 uint8_t MS_Host_ConfigurePipes(USB_ClassInfo_MS_Host_t* const MSInterfaceInfo,
                                uint16_t ConfigDescriptorSize,
@@ -273,6 +275,7 @@ static uint8_t MS_Host_SendReceiveData(USB_ClassInfo_MS_Host_t* const MSInterfac
 {
 	uint16_t BytesRem  = le32_to_cpu(SCSICommandBlock->DataTransferLength);
 	uint8_t portnum = MSInterfaceInfo->Config.PortNumber;
+	uint16_t TimeoutMSRem = 2000;
 #if defined(__LPC177X_8X__) || defined(__LPC407X_8X__)
 	uint8_t  ErrorCode = PIPE_RWSTREAM_NoError;
 	
@@ -327,7 +330,15 @@ static uint8_t MS_Host_SendReceiveData(USB_ClassInfo_MS_Host_t* const MSInterfac
 
 	Pipe_Streaming(portnum,(uint8_t*)BufferPtr,BytesRem,packsize);
 
-	while(!Pipe_IsStatusOK(portnum));
+	while(!Pipe_IsStatusOK(portnum))
+	{
+		if (!(TimeoutMSRem--))
+		{
+			return PIPE_RWSTREAM_Timeout;
+		}
+		WDT_Feed();
+		Delay_MS(1);
+	};
 
 	Pipe_ClearIN(portnum);
 	return PIPE_RWSTREAM_NoError;

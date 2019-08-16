@@ -101,13 +101,14 @@ bool Pipe_IsEndpointBound(const uint8_t EndpointAddress)
 
 uint8_t Pipe_WaitUntilReady(const uint8_t corenum)
 {
-	/*	#if (USB_STREAM_TIMEOUT_MS < 0xFF)
-	    uint8_t  TimeoutMSRem = USB_STREAM_TIMEOUT_MS;
-	   #else
-	    uint16_t TimeoutMSRem = USB_STREAM_TIMEOUT_MS;
-	   #endif
+	char process_cmd[42];
+	#if (USB_STREAM_TIMEOUT_MS < 0xFF)
+		uint8_t  TimeoutMSRem = USB_STREAM_TIMEOUT_MS;
+	#else
+		uint16_t TimeoutMSRem = USB_STREAM_TIMEOUT_MS;
+	#endif
 
-	    uint16_t PreviousFrameNumber = USB_Host_GetFrameNumber();*/
+	uint16_t PreviousFrameNumber = USB_Host_GetFrameNumber();
 
 	for (;; ) {
 		if (Pipe_IsReadWriteAllowed(corenum)) {
@@ -122,15 +123,14 @@ uint8_t Pipe_WaitUntilReady(const uint8_t corenum)
 		}
 
 		/*TODO no timeout yet */
-		/* uint16_t CurrentFrameNumber = USB_Host_GetFrameNumber();
+		uint16_t CurrentFrameNumber = USB_Host_GetFrameNumber();
 
-		   if (CurrentFrameNumber != PreviousFrameNumber)
-		   {
-		    PreviousFrameNumber = CurrentFrameNumber;
-
-		    if (!(TimeoutMSRem--))
-		      return PIPE_READYWAIT_Timeout;
-		   }*/
+		if (CurrentFrameNumber != PreviousFrameNumber)
+		{
+			PreviousFrameNumber = CurrentFrameNumber;
+			if (!(TimeoutMSRem--))
+				return PIPE_READYWAIT_Timeout;
+		}
 	}
 }
 

@@ -1,10 +1,12 @@
 /* Linker script for mbed LPC1768 */
 MEMORY
 {
-  /* Reserve first 16K (4 sectors * 4KB) for bootloader
+  /* Reserve first 64K (16 sectors * 4KB) for bootloader
    * Reserve the last 32KB sector for EEPROM emulation
    */
-  FLASH (rx) : ORIGIN = 16K, LENGTH = (512K - 48K)
+  /* FLASH (rx) : ORIGIN = 0, LENGTH = (512K - 96K) */
+  /* FLASH (rx) : ORIGIN = 64K, LENGTH = (512K - 96K) */
+  FLASH (rx) : ORIGIN = 64K, LENGTH = (512K - 96K)
   RAM (rwx) : ORIGIN = 0x100000C8, LENGTH = (32K - 0xC8)
 
   USB_RAM(rwx) : ORIGIN = 0x2007C000, LENGTH = 16K

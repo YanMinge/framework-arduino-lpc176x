@@ -1,4 +1,5 @@
 #include "../../system/CMSIS/lib/usb_host/MassStorageHost/fsusb_cfg.h"
+#include "lpc17xx_wdt.h"
 
 /*****************************************************************************
  * Private types/enumerations/variables
@@ -264,6 +265,7 @@ int FSUSB_DiskInsertWait(DISK_HANDLE_T *hDisk)
 		if(get_timer() > FSUSB_INSERT_WAIT_TIMEOUT) {
 			return 0;
 		}
+		WDT_Feed();
 		MS_Host_USBTask(hDisk);
 		USB_USBTask(hDisk->Config.PortNumber, USB_MODE_Host);
 	}
