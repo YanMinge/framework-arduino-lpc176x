@@ -101,7 +101,6 @@ bool Pipe_IsEndpointBound(const uint8_t EndpointAddress)
 
 uint8_t Pipe_WaitUntilReady(const uint8_t corenum)
 {
-	char process_cmd[42];
 	#if (USB_STREAM_TIMEOUT_MS < 0xFF)
 		uint8_t  TimeoutMSRem = USB_STREAM_TIMEOUT_MS;
 	#else
