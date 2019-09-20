@@ -275,7 +275,7 @@ static uint8_t MS_Host_SendReceiveData(USB_ClassInfo_MS_Host_t* const MSInterfac
 {
 	uint16_t BytesRem  = le32_to_cpu(SCSICommandBlock->DataTransferLength);
 	uint8_t portnum = MSInterfaceInfo->Config.PortNumber;
-	uint16_t TimeoutMSRem = 2000;
+	uint16_t TimeoutMSRem = MS_COMMAND_DATA_TIMEOUT_MS;
 #if defined(__LPC177X_8X__) || defined(__LPC407X_8X__)
 	uint8_t  ErrorCode = PIPE_RWSTREAM_NoError;
 	

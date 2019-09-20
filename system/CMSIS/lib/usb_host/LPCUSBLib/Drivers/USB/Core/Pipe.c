@@ -31,6 +31,7 @@
 
 #define  __INCLUDE_FROM_USB_DRIVER
 #include "USBMode.h"
+#include "lpc17xx_wdt.h"
 
 #if defined(USB_CAN_BE_HOST)
 
@@ -130,6 +131,8 @@ uint8_t Pipe_WaitUntilReady(const uint8_t corenum)
 			if (!(TimeoutMSRem--))
 				return PIPE_READYWAIT_Timeout;
 		}
+        WDT_Feed();
+        Delay_MS(1);
 	}
 }
 
